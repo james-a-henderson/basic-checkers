@@ -16,11 +16,13 @@ let playerEnum = {
 
 function Board(startEmpty) {
     this.board = [];
+    let height = 8;
+    let width = 8;
 
-    if(startEmpty){
-        for(let i = 0; i < 8; i++){
+    if(startEmpty){ //allow board to start empty for test purposes
+        for(let i = 0; i < height; i++){
             this.board[i] = [];
-            for(let j = 0; j < 8; j++){
+            for(let j = 0; j < width; j++){
                 if((i + j) % 2 == 0){
                     this.board[i][j] = boardSpaceEnum.UNREACHABLE;
                 } else{
@@ -29,9 +31,9 @@ function Board(startEmpty) {
             }
         }
     } else {
-        for(let i = 0; i < 8; i++){
+        for(let i = 0; i < height; i++){
             this.board[i] = [];
-            for(let j = 0; j < 8; j++){
+            for(let j = 0; j < width; j++){
                 if((i + j) % 2 == 0){
                     this.board[i][j] = boardSpaceEnum.UNREACHABLE;
                 } else if(i <= 2){
@@ -43,5 +45,26 @@ function Board(startEmpty) {
                 }
             }
         }
+    }
+
+    //for test purposes
+    this.addPiece = function(row, column, pieceType) {
+        if(row < 0 || row >= this.board.length || column < 0 || column >= this.board[0].length){
+            throw 'Cannot place peice outside of board';
+        }
+
+        if(this.board[row][column] === boardSpaceEnum.UNREACHABLE) {
+            throw 'Cannot place peice on unreachable space';
+        }
+
+        if(this.board[row][column] != boardSpaceEnum.EMPTY) {
+            throw 'Piece already at location';
+        }
+
+        if(pieceType < 1 || pieceType > 4){
+            throw 'Invalid piece type';
+        }
+
+        this.board[row][column] = pieceType;
     }
 }
