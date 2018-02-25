@@ -135,4 +135,72 @@ describe("Tests", function() {
             chai.expect(b.addPiece.bind(b, 0, 8, boardSpaceEnum.PLAYER1)).to.throw('Cannot place peice outside of board');
         });
     });
+
+    describe("Available Moves for Individual Piece", function() {
+        
+        it("No available moves for Empty space", function() {
+            let b = new Board(true);
+
+            let result = b.availableMovesForPiece(3, 2);
+
+            assert.equal(result.hasJumps, false);
+            assert.equal(result.moves.length, 0);
+        });
+
+        it("No available moves for Unreachable space", function() {
+            let b = new Board(true);
+
+            let result = b.availableMovesForPiece(3, 3);
+
+            assert.equal(result.hasJumps, false);
+            assert.equal(result.moves.length, 0);
+        });
+
+
+        function makeSinglePieceTest(row, column, pieceType, expected) {
+            let pieceString = "";
+
+            switch(pieceType) {
+                case boardSpaceEnum.PLAYER1:
+                    pieceString = "Player 1";
+                    break;
+                case boardSpaceEnum.PLAYER1KING:
+                    pieceString = "Player 1 King";
+                    break;
+                case boardSpaceEnum.PLAYER2:
+                    pieceString = "Player 2";
+                    break;
+                case boardSpaceEnum.PLAYER2KING:
+                    pieceString = "Player 2 King";
+                    break;
+            }
+            
+            it(`${pieceString} at location ${row}, ${column}`, function() {
+                let b = new Board(true);
+                b.addPiece(row, column, pieceType);
+
+                let result = b.availableMovesForPiece(row, column);
+                assert.equal(result.hasJumps, false, 'Should not have jumps on otherwise empty board');
+                assert.deepEqual(result.moves, expected);
+            });
+        }
+
+        makeSinglePieceTest(3, 2, boardSpaceEnum.PLAYER1, [[4, 1], [4, 3]]);
+        makeSinglePieceTest(0, 3, boardSpaceEnum.PLAYER1, [[1, 2], [1, 4]]);
+        makeSinglePieceTest(1, 0, boardSpaceEnum.PLAYER1, [[2, 1]]);
+        makeSinglePieceTest(4, 7, boardSpaceEnum.PLAYER1, [[5, 6]]);
+        makeSinglePieceTest(4, 5, boardSpaceEnum.PLAYER2, [[3, 4], [3, 6]]);
+        makeSinglePieceTest(7, 4, boardSpaceEnum.PLAYER2, [[6, 3], [6, 5]]);
+        makeSinglePieceTest(5, 0, boardSpaceEnum.PLAYER2, [[4, 1]]);
+        makeSinglePieceTest(4, 7, boardSpaceEnum.PLAYER2, [[3, 6]]);
+        makeSinglePieceTest(5, 6, boardSpaceEnum.PLAYER1KING, [[4, 5], [4, 7], [6, 5], [6, 7]]);
+        makeSinglePieceTest(7, 0, boardSpaceEnum.PLAYER1KING, [[6, 1]]);
+        makeSinglePieceTest(0, 5, boardSpaceEnum.PLAYER1KING, [[1, 4], [1, 6]]);
+        makeSinglePieceTest(4, 7, boardSpaceEnum.PLAYER1KING, [[3, 6], [5, 6]]);
+        makeSinglePieceTest(4, 1, boardSpaceEnum.PLAYER2KING, [[3, 0], [3, 2], [5, 0], [5, 2]]);
+        makeSinglePieceTest(3, 0, boardSpaceEnum.PLAYER2KING, [[2, 1], [4, 1]]);
+        makeSinglePieceTest(0, 1, boardSpaceEnum.PLAYER2KING, [[1, 0], [1, 2]]);
+        makeSinglePieceTest(4, 7, boardSpaceEnum.PLAYER2KING, [[3, 6], [5, 6]]);
+
+    });
 });
