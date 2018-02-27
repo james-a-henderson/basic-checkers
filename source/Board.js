@@ -68,41 +68,146 @@ function Board(startEmpty) {
         this.board[row][column] = pieceType;
     }
 
+
+    //todo: refactor this mess
+    //todo: enable chain jumps
     this.availableMovesForPiece = function(row, column) {
         let output = {
             hasJumps: false,
             moves: [],
         };
 
-        if(this.board[row][column] === boardSpaceEnum.EMPTY || this.board[row][column] === boardSpaceEnum.UNREACHABLE){
+        let currentPiece = this.board[row][column];
+
+        if(currentPiece === boardSpaceEnum.EMPTY || currentPiece === boardSpaceEnum.UNREACHABLE){
+            return output;
+        }
+
+        let friendlyPieces = [];
+        let hostilePieces = [];
+
+        if(currentPiece === boardSpaceEnum.PLAYER1 || currentPiece === boardSpaceEnum.PLAYER1KING){
+            friendlyPieces = [boardSpaceEnum.PLAYER1, boardSpaceEnum.PLAYER1KING];
+            hostilePieces = [boardSpaceEnum.PLAYER2, boardSpaceEnum.PLAYER2KING];
+        } else if(currentPiece === boardSpaceEnum.PLAYER2 || currentPiece === boardSpaceEnum.PLAYER2KING){
+            friendlyPieces = [boardSpaceEnum.PLAYER2, boardSpaceEnum.PLAYER2KING];
+            hostilePieces = [boardSpaceEnum.PLAYER1, boardSpaceEnum.PLAYER1KING];
+        } else {
             return output;
         }
 
         //check for moves above
-        if(this.board[row][column] !== boardSpaceEnum.PLAYER1){
+        if(currentPiece !== boardSpaceEnum.PLAYER1){
             if(row > 0){
                 if(column > 0){
-                    output.moves.push([row - 1, column - 1]);
+
+                    let checkedRow = row - 1;
+                    let checkedColumn = column - 1;
+
+                    if(this.board[checkedRow][checkedColumn] === boardSpaceEnum.EMPTY){
+
+                        if(!output.hasJumps){  //do not add regular moves if jumps are available
+                            output.moves.push([checkedRow, checkedColumn]);
+                        }                  
+                    } else if(checkedRow > 0 && checkedColumn > 0){  //check to see if a jump is available
+
+                        if(hostilePieces.includes(this.board[checkedRow][checkedColumn])){
+
+                            if(this.board[checkedRow - 1][checkedColumn - 1] === boardSpaceEnum.EMPTY){
+                                output = cleanOutput(output);
+                                output.moves.push([checkedRow - 1, checkedColumn - 1]);
+                            }
+    
+                        }
+                    }
+                    
                 }
 
                 if(column < this.board[row].length - 1){
-                    output.moves.push([row - 1, column + 1]);
+                    let checkedRow = row - 1;
+                    let checkedColumn = column + 1;
+
+                    if(this.board[checkedRow][checkedColumn] === boardSpaceEnum.EMPTY){
+
+                        if(!output.hasJumps){  //do not add regular moves if jumps are available
+                            output.moves.push([checkedRow, checkedColumn]);
+                        }                  
+                    } else if(checkedRow > 0 && checkedColumn < this.board[row].length - 1){ //check to see if a jump is available
+
+                        if(hostilePieces.includes(this.board[checkedRow][checkedColumn])){
+
+                            if(this.board[checkedRow - 1][checkedColumn + 1] === boardSpaceEnum.EMPTY){
+                                output = cleanOutput(output);
+                                output.moves.push([checkedRow - 1, checkedColumn + 1]);
+                            }
+    
+                        }
+                    }
                 }
             }
         }
 
         //check for moves below
-        if(this.board[row][column] !== boardSpaceEnum.PLAYER2){
+        if(currentPiece !== boardSpaceEnum.PLAYER2){
             if(row < this.board.length - 1){
                 if(column > 0){
-                    output.moves.push([row + 1, column - 1]);
+
+                    let checkedRow = row + 1;
+                    let checkedColumn = column - 1;
+
+                    if(this.board[checkedRow][checkedColumn] === boardSpaceEnum.EMPTY){
+
+                        if(!output.hasJumps){  //do not add regular moves if jumps are available
+                            output.moves.push([checkedRow, checkedColumn]);
+                        }                  
+                    } else if(checkedRow < this.board.length - 1 && checkedColumn > 0){ //check to see if a jump is available
+
+                        if(hostilePieces.includes(this.board[checkedRow][checkedColumn])){
+
+                            if(this.board[checkedRow + 1][checkedColumn - 1] === boardSpaceEnum.EMPTY){
+                                output = cleanOutput(output);
+                                output.moves.push([checkedRow + 1, checkedColumn - 1]);
+                            }
+    
+                        }
+                    }
                 }
 
                 if(column < this.board[row].length - 1){
-                    output.moves.push([row + 1, column + 1])
+
+                    let checkedRow = row + 1;
+                    let checkedColumn = column + 1;
+
+                    if(this.board[checkedRow][checkedColumn] === boardSpaceEnum.EMPTY){
+
+                        if(!output.hasJumps){  //do not add regular moves if jumps are available
+                            output.moves.push([checkedRow, checkedColumn]);
+                        }                  
+                    } else if(checkedRow < this.board.length - 1 && checkedColumn < this.board[row].length - 1){ //check to see if a jump is available
+
+                        if(hostilePieces.includes(this.board[checkedRow][checkedColumn])){
+
+                            if(this.board[checkedRow + 1][checkedColumn + 1] === boardSpaceEnum.EMPTY){
+                                output = cleanOutput(output);
+                                output.moves.push([checkedRow + 1, checkedColumn + 1]);
+                            }
+    
+                        }
+                    }
                 }
             }
         }
+
+        return output;
+    }
+
+    function cleanOutput(output){
+        if(output.hasJumps){
+            return output;
+        }
+
+        output.moves = [];
+        output.hasJumps = true;
 
         return output;
     }
