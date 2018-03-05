@@ -68,8 +68,6 @@ function Board(startEmpty) {
         this.board[row][column] = pieceType;
     }
 
-
-    //todo: refactor this mess
     //todo: enable chain jumps
     this.availableMovesForPiece = function(row, column) {
         let output = {
@@ -83,14 +81,12 @@ function Board(startEmpty) {
             return output;
         }
 
-        let friendlyPieces = [];
         let hostilePieces = [];
 
+        //determine which pieces are hostile
         if(currentPiece === boardSpaceEnum.PLAYER1 || currentPiece === boardSpaceEnum.PLAYER1KING){
-            friendlyPieces = [boardSpaceEnum.PLAYER1, boardSpaceEnum.PLAYER1KING];
             hostilePieces = [boardSpaceEnum.PLAYER2, boardSpaceEnum.PLAYER2KING];
         } else if(currentPiece === boardSpaceEnum.PLAYER2 || currentPiece === boardSpaceEnum.PLAYER2KING){
-            friendlyPieces = [boardSpaceEnum.PLAYER2, boardSpaceEnum.PLAYER2KING];
             hostilePieces = [boardSpaceEnum.PLAYER1, boardSpaceEnum.PLAYER1KING];
         } else {
             return output;
@@ -98,107 +94,45 @@ function Board(startEmpty) {
 
         //check for moves above
         if(currentPiece !== boardSpaceEnum.PLAYER1){
-            if(row > 0){
-                if(column > 0){
-
-                    let checkedRow = row - 1;
-                    let checkedColumn = column - 1;
-
-                    if(this.board[checkedRow][checkedColumn] === boardSpaceEnum.EMPTY){
-
-                        if(!output.hasJumps){  //do not add regular moves if jumps are available
-                            output.moves.push([checkedRow, checkedColumn]);
-                        }                  
-                    } else if(checkedRow > 0 && checkedColumn > 0){  //check to see if a jump is available
-
-                        if(hostilePieces.includes(this.board[checkedRow][checkedColumn])){
-
-                            if(this.board[checkedRow - 1][checkedColumn - 1] === boardSpaceEnum.EMPTY){
-                                output = cleanOutput(output);
-                                output.moves.push([checkedRow - 1, checkedColumn - 1]);
-                            }
-    
-                        }
-                    }
-                    
-                }
-
-                if(column < this.board[row].length - 1){
-                    let checkedRow = row - 1;
-                    let checkedColumn = column + 1;
-
-                    if(this.board[checkedRow][checkedColumn] === boardSpaceEnum.EMPTY){
-
-                        if(!output.hasJumps){  //do not add regular moves if jumps are available
-                            output.moves.push([checkedRow, checkedColumn]);
-                        }                  
-                    } else if(checkedRow > 0 && checkedColumn < this.board[row].length - 1){ //check to see if a jump is available
-
-                        if(hostilePieces.includes(this.board[checkedRow][checkedColumn])){
-
-                            if(this.board[checkedRow - 1][checkedColumn + 1] === boardSpaceEnum.EMPTY){
-                                output = cleanOutput(output);
-                                output.moves.push([checkedRow - 1, checkedColumn + 1]);
-                            }
-    
-                        }
-                    }
-                }
-            }
+            this.checkSpace(output, currentPiece, hostilePieces, row, column, -1, -1);
+            this.checkSpace(output, currentPiece, hostilePieces, row, column, -1, 1);
         }
 
         //check for moves below
         if(currentPiece !== boardSpaceEnum.PLAYER2){
-            if(row < this.board.length - 1){
-                if(column > 0){
-
-                    let checkedRow = row + 1;
-                    let checkedColumn = column - 1;
-
-                    if(this.board[checkedRow][checkedColumn] === boardSpaceEnum.EMPTY){
-
-                        if(!output.hasJumps){  //do not add regular moves if jumps are available
-                            output.moves.push([checkedRow, checkedColumn]);
-                        }                  
-                    } else if(checkedRow < this.board.length - 1 && checkedColumn > 0){ //check to see if a jump is available
-
-                        if(hostilePieces.includes(this.board[checkedRow][checkedColumn])){
-
-                            if(this.board[checkedRow + 1][checkedColumn - 1] === boardSpaceEnum.EMPTY){
-                                output = cleanOutput(output);
-                                output.moves.push([checkedRow + 1, checkedColumn - 1]);
-                            }
-    
-                        }
-                    }
-                }
-
-                if(column < this.board[row].length - 1){
-
-                    let checkedRow = row + 1;
-                    let checkedColumn = column + 1;
-
-                    if(this.board[checkedRow][checkedColumn] === boardSpaceEnum.EMPTY){
-
-                        if(!output.hasJumps){  //do not add regular moves if jumps are available
-                            output.moves.push([checkedRow, checkedColumn]);
-                        }                  
-                    } else if(checkedRow < this.board.length - 1 && checkedColumn < this.board[row].length - 1){ //check to see if a jump is available
-
-                        if(hostilePieces.includes(this.board[checkedRow][checkedColumn])){
-
-                            if(this.board[checkedRow + 1][checkedColumn + 1] === boardSpaceEnum.EMPTY){
-                                output = cleanOutput(output);
-                                output.moves.push([checkedRow + 1, checkedColumn + 1]);
-                            }
-    
-                        }
-                    }
-                }
-            }
+            this.checkSpace(output, currentPiece, hostilePieces, row, column, 1, -1);
+            this.checkSpace(output, currentPiece, hostilePieces, row, column, 1, 1);
         }
 
         return output;
+    }
+
+    this.checkSpace = function(output, currentPiece, hostilePieces, row, column, rowDirection, columnDirection){
+
+        let checkedRow = row + rowDirection;
+        let checkedColumn = column + columnDirection;
+
+        //if checked space is outside of board
+        if(checkedRow < 0 || checkedRow >= this.board.length || checkedColumn < 0 || checkedColumn >= this.board[checkedRow].length){
+            return;
+        }
+
+        if(this.board[checkedRow][checkedColumn] === boardSpaceEnum.EMPTY){
+
+            if(!output.hasJumps){  //do not add regular moves if jumps are available
+                output.moves.push([checkedRow, checkedColumn]);
+            }                  
+        } else if(checkedRow < this.board.length - 1 && checkedRow > 0 && checkedColumn && checkedColumn < this.board[row].length - 1 && checkedColumn > 0){ //check to see if a jump is available
+
+            if(hostilePieces.includes(this.board[checkedRow][checkedColumn])){
+
+                if(this.board[checkedRow + rowDirection][checkedColumn + columnDirection] === boardSpaceEnum.EMPTY){
+                    output = cleanOutput(output);
+                    output.moves.push([checkedRow + rowDirection, checkedColumn + columnDirection]);
+                }
+
+            }
+        }
     }
 
     function cleanOutput(output){

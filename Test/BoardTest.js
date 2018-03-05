@@ -379,8 +379,8 @@ describe("Tests", function() {
             });
         });
 
-        describe("Piece with multiple jumps", function() {
-            it("Player 1 piece with multiple jumps", function() {
+        describe("Piece with multiple jump options", function() {
+            it("Player 1 piece with multiple jump options", function() {
                 let b = new Board(true);
                 b.addPiece(4, 5, boardSpaceEnum.PLAYER1);
                 b.addPiece(5, 4, boardSpaceEnum.PLAYER2);
@@ -388,6 +388,45 @@ describe("Tests", function() {
 
                 let expected = [[6, 3], [6, 7]];
                 let result = b.availableMovesForPiece(4, 5);
+                assert.equal(result.hasJumps, true);
+                assert.deepEqual(result.moves, expected);
+            });
+
+            it("Player 2 piece with multiple jump options", function() {
+                let b = new Board(true);
+                b.addPiece(4, 3, boardSpaceEnum.PLAYER2);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER1);
+                b.addPiece(3, 4, boardSpaceEnum.PLAYER1KING);
+
+                let expected = [[2, 1], [2, 5]];
+                let result = b.availableMovesForPiece(4, 3);
+                assert.equal(result.hasJumps, true);
+                assert.deepEqual(result.moves, expected);
+            });
+
+            it("Player 1 king with multiple jump options", function() {
+                let b = new Board(true);
+                b.addPiece(4, 5, boardSpaceEnum.PLAYER1KING);
+                b.addPiece(5, 4, boardSpaceEnum.PLAYER2);
+                b.addPiece(3, 4, boardSpaceEnum.PLAYER2KING);
+                b.addPiece(3, 6, boardSpaceEnum.PLAYER2);
+
+                let expected = [[2, 3],[2, 7],[6, 3]];
+                let result = b.availableMovesForPiece(4, 5);
+                assert.equal(result.hasJumps, true);
+                assert.deepEqual(result.moves, expected);
+            });
+
+            it("Player 2 king with multiple jump options", function() {
+                let b = new Board(true);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER2KING);
+                b.addPiece(2, 1, boardSpaceEnum.PLAYER1);
+                b.addPiece(2, 3, boardSpaceEnum.PLAYER1KING);
+                b.addPiece(4, 1, boardSpaceEnum.PLAYER1KING);
+                b.addPiece(4, 3, boardSpaceEnum.PLAYER1);
+
+                let expected = [[1, 0], [1, 4], [5, 0], [5, 4]];
+                let result = b.availableMovesForPiece(3, 2);
                 assert.equal(result.hasJumps, true);
                 assert.deepEqual(result.moves, expected);
             });
