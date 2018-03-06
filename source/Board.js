@@ -135,6 +135,56 @@ function Board(startEmpty) {
         }
     }
 
+    this.getPiecesWithAvailableMoves = function(player){
+        if(player !== playerEnum.PLAYER1 && player !== playerEnum.PLAYER2) {
+            throw 'Invalid Player';
+        }
+
+        let playerPieces = [];
+        let piecesWithMoves = [];
+        let jumpsAvailable = false;
+
+        //get array of player's pieces
+        if(player === playerEnum.PLAYER1){
+            playerPieces = [boardSpaceEnum.PLAYER1, boardSpaceEnum.PLAYER1KING];
+        } else{
+            playerPieces = [boardSpaceEnum.PLAYER2, boardSpaceEnum.PLAYER2KING];
+        }
+
+        for(let i = 0; i < this.board.length; i++){
+            for(let j = 0; j < this.board[i].length; j++) {
+                if(!playerPieces.includes(this.board[i][j])){
+                    continue;
+                }
+
+                let availabeMoves = this.availableMovesForPiece(i, j);
+
+                if(availabeMoves.moves.length <= 0){
+                    continue;
+                }
+                
+                //jumps found; only pieces with jumps are added
+                if(jumpsAvailable) {
+                    if(availabeMoves.hasJumps){
+                        piecesWithMoves.push([i, j]);
+                    }
+                } else {  //jumps not found
+
+                    //if piece has jumps with no other jumps found, clear previously found moves
+                    if(availabeMoves.hasJumps) {  
+                        jumpsAvailable = true;
+                        piecesWithMoves = [];
+                        piecesWithMoves.push([i, j]);
+                    } else{
+                        piecesWithMoves.push([i, j]);
+                    }
+                }
+            }
+        }
+
+        return piecesWithMoves;
+    }
+
     function cleanOutput(output){
         if(output.hasJumps){
             return output;

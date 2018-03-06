@@ -432,4 +432,97 @@ describe("Tests", function() {
             });
         });
     });
+
+    describe("Get all moves", function() {
+
+        it("Invalid player throws exception; Player Value: 0", function () {
+            let b = new Board(false);
+            chai.expect(b.getPiecesWithAvailableMoves.bind(b, -1)).to.throw('Invalid Player');
+        });
+
+        it("Invalid player throws exception; Player Value: 3", function () {
+            let b = new Board(false);
+            chai.expect(b.getPiecesWithAvailableMoves.bind(b, 3)).to.throw('Invalid Player');
+        });
+
+        it("Player 1 starting moves", function () {
+            let b = new Board(false);
+
+            let expected = [[2, 1], [2, 3], [2, 5], [2, 7]];
+            let result = b.getPiecesWithAvailableMoves(playerEnum.PLAYER1);
+            assert.deepEqual(result, expected);
+        });
+
+        it("Player 2 moves without jumps", function () {
+            let b = new Board(true);
+            b.addPiece(0, 1, boardSpaceEnum.PLAYER2);
+            b.addPiece(0, 3, boardSpaceEnum.PLAYER2KING);
+            b.addPiece(1, 0, boardSpaceEnum.PLAYER2KING);
+            b.addPiece(1, 2, boardSpaceEnum.PLAYER2KING);
+            b.addPiece(3, 2, boardSpaceEnum.PLAYER2);
+            b.addPiece(5, 4, boardSpaceEnum.PLAYER1);
+            b.addPiece(6, 3, boardSpaceEnum.PLAYER1KING);
+            b.addPiece(6, 5, boardSpaceEnum.PLAYER1);
+
+            let expected = [[0, 3], [1, 0], [1, 2], [3, 2]];
+            let result = b.getPiecesWithAvailableMoves(playerEnum.PLAYER2);
+            assert.deepEqual(result, expected);
+        });
+
+        it("Player 1 no available moves", function() {
+            let b = new Board(true);
+            b.addPiece(0, 7, boardSpaceEnum.PLAYER1);
+            b.addPiece(1, 6, boardSpaceEnum.PLAYER2);
+            b.addPiece(2, 5, boardSpaceEnum.PLAYER2KING);
+
+            let expected = [];
+            let result = b.getPiecesWithAvailableMoves(playerEnum.PLAYER1);
+            assert.deepEqual(result, expected);
+        });
+
+        it("Player 2 no available moves", function() {
+            let b = new Board(true);
+            b.addPiece(3, 2, boardSpaceEnum.PLAYER2);
+            b.addPiece(2, 1, boardSpaceEnum.PLAYER1KING);
+            b.addPiece(1, 0, boardSpaceEnum.PLAYER2KING);
+            b.addPiece(0, 1, boardSpaceEnum.PLAYER2KING);
+            b.addPiece(1, 2, boardSpaceEnum.PLAYER1);
+            b.addPiece(2, 3, boardSpaceEnum.PLAYER1);
+            b.addPiece(1, 4, boardSpaceEnum.PLAYER1KING);
+            b.addPiece(4, 1, boardSpaceEnum.PLAYER1);
+            b.addPiece(5, 0, boardSpaceEnum.PLAYER1KING);
+            b.addPiece(4, 3, boardSpaceEnum.PLAYER1);
+            b.addPiece(5, 4, boardSpaceEnum.PLAYER1KING);
+
+            let expected = [];
+            let result = b.getPiecesWithAvailableMoves(playerEnum.PLAYER2);
+            assert.deepEqual(result, expected);
+        });
+
+        it("Player 1 only jumps listed", function() {
+            let b = new Board(true);
+            b.addPiece(4, 3, boardSpaceEnum.PLAYER1KING);
+            b.addPiece(3, 2, boardSpaceEnum.PLAYER2);
+            b.addPiece(6, 3, boardSpaceEnum.PLAYER1);
+
+            let expected = [[4, 3]];
+            let result = b.getPiecesWithAvailableMoves(playerEnum.PLAYER1);
+            assert.deepEqual(result, expected);
+        })
+
+        it("Player 2 only jumps listed", function() {
+            let b = new Board(true);
+            b.addPiece(3, 2, boardSpaceEnum.PLAYER2);
+            b.addPiece(3, 4, boardSpaceEnum.PLAYER2KING);
+            b.addPiece(2, 3, boardSpaceEnum.PLAYER1);
+            b.addPiece(1, 2, boardSpaceEnum.PLAYER2);
+            b.addPiece(6, 7, boardSpaceEnum.PLAYER2);
+            b.addPiece(5, 6, boardSpaceEnum.PLAYER1KING);
+
+            let expected = [[3, 2], [6, 7]];
+            let result = b.getPiecesWithAvailableMoves(playerEnum.PLAYER2);
+            assert.deepEqual(result, expected);
+            
+        });
+    });
 });
