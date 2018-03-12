@@ -525,4 +525,149 @@ describe("Tests", function() {
             
         });
     });
+
+    describe("Make move", function() {
+
+        describe("Valid move without jumps", function() {
+            it("Player 1 move on empty board", function() {
+                let b = new Board(true);
+                b.addPiece(4, 3, boardSpaceEnum.PLAYER1);
+                b.makeMove(4, 3, 5, 2);
+
+                let expected = emptyBoard;
+                expected[5][2] = boardSpaceEnum.PLAYER1;
+                assertBoardsAreEqual(b.board, expected);
+            });
+
+            it("Player 1 King move on empty board", function() {
+                let b = new Board(true);
+                b.addPiece(4, 3, boardSpaceEnum.PLAYER1KING);
+                b.makeMove(4, 3, 3, 2);
+
+                let expected = emptyBoard;
+                expected[3][2] = boardSpaceEnum.PLAYER1KING;
+                assertBoardsAreEqual(b.board, expected);
+            });
+
+            it("Player 2 move on empty board", function() {
+                let b = new Board(true);
+                b.addPiece(4, 3, boardSpaceEnum.PLAYER2);
+                b.currentPlayer = playerEnum.PLAYER2;
+                b.makeMove(4, 3, 3, 2);
+
+                let expected = emptyBoard;
+                expected[3][2] = boardSpaceEnum.PLAYER2;
+                assertBoardsAreEqual(b.board, expected);
+            });
+
+            it("Player 2 King move on empty board", function() {
+                let b = new Board(true);
+                b.addPiece(4, 3, boardSpaceEnum.PLAYER2KING);
+                b.currentPlayer = playerEnum.PLAYER2;
+                b.makeMove(4, 3, 5, 2);
+
+                let expected = emptyBoard;
+                expected[5][2] = boardSpaceEnum.PLAYER2KING;
+                assertBoardsAreEqual(b.board, expected);
+            });
+        });
+
+        describe("Invalid inputs", function() {
+            it("Empty space selected throws exception", function() {
+                let b = new Board(true);
+                chai.expect(b.makeMove.bind(b, 3, 2, 2, 1)).to.throw('No piece on selected space');
+            });
+
+            it("Unreachable space selected throws exception", function() {
+                let b = new Board(true);
+                chai.expect(b.makeMove.bind(b, 4, 2, 3, 1)).to.throw('No piece on selected space');
+            });
+
+            it("Player 2 piece selected on player 1's turn throws exception", function() {
+                let b = new Board(true);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER2);
+                chai.expect(b.makeMove.bind(b, 3, 2, 2, 1)).to.throw("Piece is not current player's");
+            });
+
+            it("Player 1 piece selected on player 2's turn throws exception", function() {
+                let b = new Board(true);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER1);
+                b.currentPlayer = playerEnum.PLAYER2;
+                chai.expect(b.makeMove.bind(b, 3, 2, 4, 1)).to.throw("Piece is not current player's");
+            });
+
+            it("Player 2 King selected on player 1's turn throws exception", function() {
+                let b = new Board(true);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER2KING);
+                chai.expect(b.makeMove.bind(b, 3, 2, 2, 1)).to.throw("Piece is not current player's");
+            });
+
+            it("Player 1 King selected on player 2's turn throws exception", function() {
+                let b = new Board(true);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER1KING);
+                b.currentPlayer = playerEnum.PLAYER2;
+                chai.expect(b.makeMove.bind(b, 3, 2, 4, 1)).to.throw("Piece is not current player's");
+            });
+
+            it("Invalid Move for Player 1 piece throws exception", function() {
+                let b = new Board(true);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER1);
+                chai.expect(b.makeMove.bind(b, 3, 2, 2, 1)).to.throw('Invalid Move');
+            });
+
+            it("Invalid Move for Player 2 piece throws exception", function() {
+                let b = new Board(true);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER2);
+                b.currentPlayer = playerEnum.PLAYER2;
+                chai.expect(b.makeMove.bind(b, 3, 2, 4, 1)).to.throw('Invalid Move');
+            });
+
+            it("Invalid Move for Player 1 King throws exception", function() {
+                let b = new Board(true);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER1);
+                chai.expect(b.makeMove.bind(b, 3, 2, 0, 1)).to.throw('Invalid Move');
+            });
+
+            it("Invalid Move for Player 2 King throws exception", function() {
+                let b = new Board(true);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER2);
+                b.currentPlayer = playerEnum.PLAYER2;
+                chai.expect(b.makeMove.bind(b, 3, 2, 7, 2)).to.throw('Invalid Move');
+            });
+
+            it("Piece destination outside bounds piece throws exception", function() {
+                let b = new Board(true);
+                b.addPiece(5, 0, boardSpaceEnum.PLAYER1);
+                chai.expect(b.makeMove.bind(b, 5, 0, -1, 6)).to.throw('Invalid Move');
+            });
+
+            it("Piece with no jumps selected when jumps available throws exception", function() {
+                let b = new Board(true);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER1KING);
+                b.addPiece(6, 3, boardSpaceEnum.PLAYER1);
+                b.addPiece(2, 3, boardSpaceEnum.PLAYER2);
+
+                chai.expect(b.makeMove.bind(b, 6, 3, 7, 4)).to.throw('Invalid Piece selection');
+            });
+        });
+
+        describe("Current player switches after move", function() {
+            it("Player 1 switches to player 2 after normal move", function() {
+                let b = new Board(true);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER1);
+                b.makeMove(3, 2, 4, 1);
+
+                assert.equal(b.currentPlayer, playerEnum.PLAYER2)
+            });
+
+            it("Player 2 switches to player 1 after normal move", function() {
+                let b = new Board(true);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER2KING);
+                b.currentPlayer = playerEnum.PLAYER2;
+                b.makeMove(3, 2, 4, 1);
+
+                assert.equal(b.currentPlayer, playerEnum.PLAYER1)
+            });
+        });
+    });
 });

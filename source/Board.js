@@ -16,6 +16,7 @@ let playerEnum = {
 
 function Board(startEmpty) {
     this.board = [];
+    this.currentPlayer = playerEnum.PLAYER1;
     let height = 8;
     let width = 8;
 
@@ -68,7 +69,6 @@ function Board(startEmpty) {
         this.board[row][column] = pieceType;
     }
 
-    //todo: enable chain jumps
     this.availableMovesForPiece = function(row, column) {
         let output = {
             hasJumps: false,
@@ -194,5 +194,64 @@ function Board(startEmpty) {
         output.hasJumps = true;
 
         return output;
+    }
+
+    //todo: enable jumps
+    //todo: enable piece promotion
+    this.makeMove = function(startRow, startColumn, destinationRow, destinationColumn){
+        if(this.board[startRow][startColumn] === boardSpaceEnum.EMPTY || this.board[startRow][startColumn] === boardSpaceEnum.UNREACHABLE){
+            throw 'No piece on selected space';
+        }
+
+        if(this.currentPlayer === playerEnum.PLAYER1){
+            if(this.board[startRow][startColumn] !== boardSpaceEnum.PLAYER1 && this.board[startRow][startColumn] !== boardSpaceEnum.PLAYER1KING){
+                throw "Piece is not current player's";
+            }
+        } else if(this.currentPlayer === playerEnum.PLAYER2) {
+            if(this.board[startRow][startColumn] !== boardSpaceEnum.PLAYER2 && this.board[startRow][startColumn] !== boardSpaceEnum.PLAYER2KING){
+                throw "Piece is not current player's";
+            }
+        }
+
+        let piecesWithMoves = this.getPiecesWithAvailableMoves(this.currentPlayer);
+        if(!verifyPieceSelectionIsValid(piecesWithMoves, startRow, startColumn)){
+            throw 'Invalid Piece selection';
+        }
+
+        let pieceMoves = this.availableMovesForPiece(startRow, startColumn);
+        if(!verifyMoveIsValid(pieceMoves, destinationRow, destinationColumn)){
+            throw 'Invalid Move';
+        }
+        
+        this.board[destinationRow][destinationColumn] = this.board[startRow][startColumn];
+        this.board[startRow][startColumn] = boardSpaceEnum.EMPTY;
+
+        this.swapCurrentPlayer();
+    }
+
+    function verifyPieceSelectionIsValid(piecesWithMoves, startRow, startColumn){
+        let filteredPieces = piecesWithMoves.filter(thisPiece =>(thisPiece[0] === startRow && thisPiece[1] === startColumn));
+        if(filteredPieces.length === 0){
+            return false;
+        }
+
+        return true;
+    }
+
+    function verifyMoveIsValid(pieceMoves, destinationRow, destinationColumn){
+        let filteredMoves = pieceMoves.moves.filter(thisMove => (thisMove[0] === destinationRow && thisMove[1] === destinationColumn));
+        if(filteredMoves.length === 0){
+            return false
+        }
+
+        return true;
+    }
+
+    this.swapCurrentPlayer = function(){
+        if(this.currentPlayer === playerEnum.PLAYER1){
+            this.currentPlayer = playerEnum.PLAYER2;
+        } else{
+            this.currentPlayer = playerEnum.PLAYER1;
+        }
     }
 }
