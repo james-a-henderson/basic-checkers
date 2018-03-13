@@ -196,13 +196,14 @@ function Board(startEmpty) {
         return output;
     }
 
-    //todo: enable jumps
-    //todo: enable piece promotion
+    //todo: enable chaining jumps
     this.makeMove = function(startRow, startColumn, destinationRow, destinationColumn){
+        //ensure selected piece is an actual piece
         if(this.board[startRow][startColumn] === boardSpaceEnum.EMPTY || this.board[startRow][startColumn] === boardSpaceEnum.UNREACHABLE){
             throw 'No piece on selected space';
         }
 
+        //ensure selected piece is one of current player's pieces
         if(this.currentPlayer === playerEnum.PLAYER1){
             if(this.board[startRow][startColumn] !== boardSpaceEnum.PLAYER1 && this.board[startRow][startColumn] !== boardSpaceEnum.PLAYER1KING){
                 throw "Piece is not current player's";
@@ -225,6 +226,22 @@ function Board(startEmpty) {
         
         this.board[destinationRow][destinationColumn] = this.board[startRow][startColumn];
         this.board[startRow][startColumn] = boardSpaceEnum.EMPTY;
+
+        //If a jump was available, only jumps are valid
+        if(pieceMoves.hasJumps) {
+            //remove piece in between the start and destination spaces
+            let jumpedRow = (startRow + destinationRow) / 2;
+            let jumpedColumn = (startColumn + destinationColumn) / 2;
+
+            this.board[jumpedRow][jumpedColumn] = boardSpaceEnum.EMPTY;
+        }
+
+        //promote piece
+        if(this.currentPlayer === playerEnum.PLAYER1 && destinationRow === this.board.length - 1){
+            this.board[destinationRow][destinationColumn] = boardSpaceEnum.PLAYER1KING;
+        } else if(this.currentPlayer === playerEnum.PLAYER2 && destinationRow === 0) {
+            this.board[destinationRow][destinationColumn] = boardSpaceEnum.PLAYER2KING;
+        }
 
         this.swapCurrentPlayer();
     }

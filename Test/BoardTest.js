@@ -669,5 +669,76 @@ describe("Tests", function() {
                 assert.equal(b.currentPlayer, playerEnum.PLAYER1)
             });
         });
+
+        describe("Valid move with single jump", function() {
+            it("Player 1 piece jump", function() {
+                let b = new Board(true);
+                b.addPiece(4, 3, boardSpaceEnum.PLAYER1);
+                b.addPiece(5, 2, boardSpaceEnum.PLAYER2);
+                b.makeMove(4, 3, 6, 1);
+
+                let expected = emptyBoard;
+                expected[6][1] = boardSpaceEnum.PLAYER1;
+                assertBoardsAreEqual(b.board, expected);
+            });
+
+            it("Player 2 piece jump", function() {
+                let b = new Board(true);
+                b.addPiece(4, 3, boardSpaceEnum.PLAYER1);
+                b.addPiece(5, 2, boardSpaceEnum.PLAYER2);
+                b.currentPlayer = playerEnum.PLAYER2;
+                b.makeMove(5, 2, 3, 4);
+
+                let expected = emptyBoard;
+                expected[3][4] = boardSpaceEnum.PLAYER2;
+                assertBoardsAreEqual(b.board, expected);
+            });
+
+            it("Player 1 King jump from edge", function() {
+                let b = new Board(true);
+                b.addPiece(5, 0, boardSpaceEnum.PLAYER1KING);
+                b.addPiece(4, 1, boardSpaceEnum.PLAYER2);
+                b.makeMove(5, 0, 3, 2);
+
+                let expected = emptyBoard;
+                expected[3][2] = boardSpaceEnum.PLAYER1KING;
+                assertBoardsAreEqual(b.board, expected);
+            });
+
+            it("Player 2 king jump to edge", function() {
+                let b = new Board(true);
+                b.addPiece(2, 5, boardSpaceEnum.PLAYER2KING);
+                b.addPiece(3, 6, boardSpaceEnum.PLAYER1);
+                b.currentPlayer = playerEnum.PLAYER2;
+                b.makeMove(2, 5, 4, 7);
+
+                let expected = emptyBoard;
+                expected[4][7] = boardSpaceEnum.PLAYER2KING;
+                assertBoardsAreEqual(b.board, expected);
+            });
+        });
+
+        describe("Piece Promotion", function() {
+            it("Player 1 piece is promoted when reaching bottom edge", function() {
+                let b = new Board(true);
+                b.addPiece(6, 3, boardSpaceEnum.PLAYER1);
+                b.makeMove(6, 3, 7, 2);
+
+                let expected = emptyBoard;
+                expected[7][2] = boardSpaceEnum.PLAYER1KING;
+                assertBoardsAreEqual(b.board, expected);
+            });
+
+            it("Player 2 piece is promoted when reaching top edge", function() {
+                let b = new Board(true);
+                b.addPiece(1, 0, boardSpaceEnum.PLAYER2);
+                b.currentPlayer = playerEnum.PLAYER2;
+                b.makeMove(1, 0, 0, 1);
+
+                let expected = emptyBoard;
+                expected[0][1] = boardSpaceEnum.PLAYER2KING;
+                assertBoardsAreEqual(b.board, expected);
+            });
+        });
     });
 });
