@@ -740,5 +740,85 @@ describe("Tests", function() {
                 assertBoardsAreEqual(b.board, expected);
             });
         });
+
+        describe("Chain jumps", function() {
+
+            it("No jump previous move false Player 1 piece", function() {
+                let b = new Board(true);
+                b.addPiece(4, 3, boardSpaceEnum.PLAYER1);
+                b.makeMove(4, 3, 5, 2);
+
+                assert.equal(b.previousMove.chainJump, false);
+            });
+
+            it("No jump previous move false Player 2 King", function() {
+                let b = new Board(true);
+                b.addPiece(4, 3, boardSpaceEnum.PLAYER2KING);
+                b.currentPlayer = playerEnum.PLAYER2;
+                b.makeMove(4, 3, 5, 2);
+
+                assert.equal(b.previousMove.chainJump, false);
+            });
+
+            it("Single jump no double jump previous move false Player 1 King", function() {
+                let b = new Board(true);
+                b.addPiece(5, 0, boardSpaceEnum.PLAYER1KING);
+                b.addPiece(4, 1, boardSpaceEnum.PLAYER2);
+                b.makeMove(5, 0, 3, 2);
+
+                assert.equal(b.previousMove.chainJump, false);
+            });
+
+            it("Double jump available previous move true and piece coordinates; Player 2", function() {
+                let b = new Board(true);
+                b.addPiece(4, 3, boardSpaceEnum.PLAYER1);
+                b.addPiece(5, 2, boardSpaceEnum.PLAYER2);
+                b.addPiece(2, 5, boardSpaceEnum.PLAYER1KING);
+                b.currentPlayer = playerEnum.PLAYER2;
+                b.makeMove(5, 2, 3, 4);
+
+                assert.equal(b.previousMove.chainJump, true);
+                assert.equal(b.previousMove.pieceRow, 3);
+                assert.equal(b.previousMove.pieceColumn, 4);
+            });
+
+            it("Exception thrown when attempts to move piece that is not the chained piece", function() {
+                let b = new Board(true);
+                b.addPiece(2, 1, boardSpaceEnum.PLAYER1);
+                b.addPiece(3, 2, boardSpaceEnum.PLAYER2);
+                b.addPiece(5, 4, boardSpaceEnum.PLAYER2);
+                b.addPiece(4, 5, boardSpaceEnum.PLAYER1);
+
+                b.makeMove(2, 1, 4, 3);
+                chai.expect(b.makeMove.bind(b, 4, 5, 6, 3)).to.throw('Must use chain jump piece');
+            });
+
+            it("Double jump Player 1 piece", function() {
+                let b = new Board(true);
+                b.addPiece(2, 3, boardSpaceEnum.PLAYER1);
+                b.addPiece(3, 4, boardSpaceEnum.PLAYER2);
+                b.addPiece(5, 4, boardSpaceEnum.PLAYER2)
+                b.makeMove(2, 3, 4, 5);
+                b.makeMove(4, 5, 6, 3);
+
+                let expected = emptyBoard;
+                expected[6][3] = boardSpaceEnum.PLAYER1;
+                assertBoardsAreEqual(b.board, expected);
+            });
+
+            it("Double jump Player 2 king", function() {
+                let b = new Board(true);
+                b.currentPlayer = playerEnum.PLAYER2;
+                b.addPiece(2, 3, boardSpaceEnum.PLAYER2KING);
+                b.addPiece(3, 4, boardSpaceEnum.PLAYER1);
+                b.addPiece(5, 4, boardSpaceEnum.PLAYER1)
+                b.makeMove(2, 3, 4, 5);
+                b.makeMove(4, 5, 6, 3);
+
+                let expected = emptyBoard;
+                expected[6][3] = boardSpaceEnum.PLAYER2KING;
+                assertBoardsAreEqual(b.board, expected);
+            });
+        });
     });
 });

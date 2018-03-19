@@ -7,4 +7,23 @@
     
     <script src="Board.js"></script>
 
+    <script>
+    let table = document.createElement("TABLE");
+
+        for(let i = 0; i < 8; i++) {
+            let row = table.insertRow(i);
+
+            for(let j = 0; j < 8; j++) {
+                let cell = row.insertCell(j);
+
+            }
+        }
+
+        document.body.appendChild(table);
+
+        let bor = new Board(false);
+
+        bor.displayBoard(table);
+    </script>
+
 </html>

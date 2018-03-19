@@ -14,29 +14,16 @@ let playerEnum = {
     PLAYER2: 2,
 }
 
-
-let table = document.createElement("TABLE");
-
-for(let i = 0; i < 8; i++) {
-    let row = table.insertRow(i);
-
-    for(let j = 0; j < 8; j++) {
-        let cell = row.insertCell(j);
-
-    }
-}
-
-document.body.appendChild(table);
-
-let bor = new Board(false);
-
-bor.displayBoard(table);
-
 function Board(startEmpty) {
     this.board = [];
     this.currentPlayer = playerEnum.PLAYER1;
     let height = 8;
     let width = 8;
+    this.previousMove = {
+        chainJump: false,
+        pieceRow: -1,
+        pieceColumn: -1
+    };
 
     if(startEmpty){ //allow board to start empty for test purposes
         for(let i = 0; i < height; i++){
@@ -217,8 +204,14 @@ function Board(startEmpty) {
     //todo: enable chaining jumps
     this.makeMove = function(startRow, startColumn, destinationRow, destinationColumn){
         //ensure selected piece is an actual piece
+        let madeJump = false;
+
         if(this.board[startRow][startColumn] === boardSpaceEnum.EMPTY || this.board[startRow][startColumn] === boardSpaceEnum.UNREACHABLE){
             throw 'No piece on selected space';
+        }
+
+        if(this.previousMove.chainJump && (this.previousMove.pieceRow !== startRow || this.previousMove.pieceColumn !== startColumn)){
+            throw 'Must use chain jump piece';
         }
 
         //ensure selected piece is one of current player's pieces
@@ -252,6 +245,7 @@ function Board(startEmpty) {
             let jumpedColumn = (startColumn + destinationColumn) / 2;
 
             this.board[jumpedRow][jumpedColumn] = boardSpaceEnum.EMPTY;
+            madeJump = true;
         }
 
         //promote piece if at opposite edge
@@ -261,7 +255,15 @@ function Board(startEmpty) {
             this.board[destinationRow][destinationColumn] = boardSpaceEnum.PLAYER2KING;
         }
 
-        this.swapCurrentPlayer();
+        if(madeJump && this.availableMovesForPiece(destinationRow, destinationColumn).hasJumps){
+            this.previousMove.chainJump = true;
+        } else {
+            this.previousMove.chainJump = false;
+            this.swapCurrentPlayer();
+        }
+        
+        this.previousMove.pieceRow = destinationRow;
+        this.previousMove.pieceColumn = destinationColumn;
     }
 
     function verifyPieceSelectionIsValid(piecesWithMoves, startRow, startColumn){
