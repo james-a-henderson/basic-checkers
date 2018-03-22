@@ -6,9 +6,10 @@
 <body>
     
     <script src="Board.js"></script>
+    <script src="DisplayBoard.js"></script>
 
     <script>
-    let table = document.createElement("TABLE");
+        let table = document.createElement("TABLE");
 
         for(let i = 0; i < 8; i++) {
             let row = table.insertRow(i);
@@ -23,7 +24,12 @@
 
         let bor = new Board(false);
 
-        bor.displayBoard(table);
+        let display = new DisplayBoard(table);
+        display.displayBoard(bor.board);
+        display.highlightAvailableMovesForCurrentPlayer(bor.board, bor.getPiecesWithAvailableMoves(bor.currentPlayer));
+        bor.currentPlayer = playerEnum.PLAYER2;
+        display.highlightAvailableMovesForCurrentPlayer(bor.board, bor.getPiecesWithAvailableMoves(bor.currentPlayer));
+
     </script>
 
 </html>

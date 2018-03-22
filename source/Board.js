@@ -292,41 +292,5 @@ function Board(startEmpty) {
         }
     }
 
-    this.displayBoard = function(table){
-        for(let i = 0; i < this.board.length; i++){
-            let row = table.rows[i];
-
-            for(let j = 0; j < this.board[i].length; j++) {
-                let cell = row.cells[j];
-
-                let img = document.createElement("img");
-                //img.src = "../Player1.png";
-                img.width = 50;
-                img.height = 50;
-                
-                switch(this.board[i][j]){
-                    case boardSpaceEnum.EMPTY:
-                        img.src = "../Empty.png";
-                        break;
-                    case boardSpaceEnum.UNREACHABLE:
-                        img.src = "../Unreachable.png";
-                        break;
-                    case boardSpaceEnum.PLAYER1:
-                        img.src = "../Player1.png";
-                        break;
-                    case boardSpaceEnum.PLAYER2:
-                        img.src = "../Player2.png";
-                        break;
-                    case boardSpaceEnum.PLAYER1KING:
-                        img.src = "../Player1King.png";
-                        break;
-                    case boardSpaceEnum.PLAYER2KING:
-                        img.src = "../Player2King.png";
-                        break;
-                }
-
-                cell.appendChild(img);
-            }
-        }
-    }
+    
 }
