@@ -1,6 +1,6 @@
 "use strict"
 
-describe("Tests", function() {
+describe("Board Tests", function() {
 
     let startingBoard;
     let emptyBoard;

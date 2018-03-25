@@ -81,11 +81,11 @@ function DisplayBoard(outputTable) {
         this.higlightedSpaces = [];
     }
 
-    this.highlightAvailableMovesForCurrentPlayer = function(board, availableMoves){
+    this.highlightPieces = function(board, pieces){
 
         this.clearHighlights(board);
 
-        for(let coordinate of availableMoves){
+        for(let coordinate of pieces){
             let cell = this.table.rows[coordinate[0]].cells[coordinate[1]];
             this.higlightedSpaces.push([coordinate[0], coordinate[1]]);
 
