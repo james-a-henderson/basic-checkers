@@ -108,6 +108,11 @@ function DisplayBoard(outputTable) {
                 case boardSpaceEnum.PLAYER2KING:
                     img.src = "../Player2King_Highlight.png";
                     break;
+                case boardSpaceEnum.EMPTY:
+                    img.src = "../Highlight.png";
+                    break;
+                default:
+                    throw `Space type with code ${board[coordinate[0]][coordinate[1]]} cannot be hilighted`
             }
 
             cell.appendChild(img);

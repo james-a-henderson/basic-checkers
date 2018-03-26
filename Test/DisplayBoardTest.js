@@ -101,6 +101,7 @@ describe("Board Display Tests", function(){
     
             assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player2King.png'));
         });
+
     });
     
     describe("Multiple spaces display correctly", function(){
@@ -232,6 +233,23 @@ describe("Board Display Tests", function(){
         
                 assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player2King_Highlight.png'));
             });
+
+            it("Empty Space", function(){
+                let table = generateTable(1, 1);
+        
+                let board = [
+                    [boardSpaceEnum.EMPTY]
+                ];
+                
+                let pieces = [[0, 0]];
+
+                let display = new DisplayBoard(table);
+        
+                display.displayBoard(board);
+                display.highlightPieces(board, pieces);
+        
+                assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Highlight.png'));
+            });
         });
 
         describe("Highlight multiple spaces", function(){
@@ -355,6 +373,24 @@ describe("Board Display Tests", function(){
                 assert(display.table.rows[1].cells[0].firstChild.src.endsWith('Player2.png'));
             });
 
+        });
+
+        describe("Errors", function(){
+            it("Attempting to highlight Unreachable space throws exception", function(){
+                let table = generateTable(1, 1);
+        
+                let board = [
+                    [boardSpaceEnum.UNREACHABLE]
+                ];
+
+                let pieces = [[0, 0]];
+                
+                let display = new DisplayBoard(table);
+        
+                display.displayBoard(board);
+                chai.expect(display.highlightPieces.bind(display, board, pieces)).to.throw('Space type with code 6 cannot be hilighted');
+    
+            });
         });
     });
 
