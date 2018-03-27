@@ -3,9 +3,25 @@
 function DisplayBoard(outputTable) {
 
     //constants
-    const imgWidth = 50;
-    const imgHeight = 50;
+    const IMG_WIDTH = 50;
+    const IMG_HEIGHT = 50;
 
+    //image files
+    const EMPTY_FILE = "../Images/Empty.png";
+    const UNREACHABLE_FILE = "../Images/Unreachable.png";
+    const PLAYER1_FILE = "../Images/Player1.png";
+    const PLAYER2_FILE = "../Images/Player2.png";
+    const PLAYER1KING_FILE = "../Images/Player1King.png";
+    const PLAYER2KING_FILE = "../Images/Player2King.png";
+    const EMPTY_HIGHLIGHT_FILE = "../Images/Highlight.png";
+    const PLAYER1_HIGHLIGHT_FILE = "../Images/Player1_Highlight.png";
+    const PLAYER2_HIGHLIGHT_FILE = "../Images/Player2_Highlight.png";
+    const PLAYER1KING_HIGHLIGHT_FILE = "../Images/Player1King_Highlight.png";
+    const PLAYER2KING_HIGHLIGHT_FILE = "../Images/Player2King_Highlight.png";
+    const PLAYER1_SELECTED_FILE = "../Images/Player1_Selected.png";
+    const PLAYER2_SELECTED_FILE = "../Images/Player2_Selected.png";
+    const PLAYER1KING_SELECTED_FILE = "../Images/Player1King_Selected.png";
+    const PLAYER2KING_SELECTED_FILE = "../Images/Player2King_Selected.png";
 
     this.table = outputTable;
     this.higlightedSpaces = [];
@@ -22,27 +38,27 @@ function DisplayBoard(outputTable) {
                 clearCell(cell)
                 
                 let img = document.createElement("img");
-                img.width = imgWidth;
+                img.width = IMG_WIDTH;
                 img.height = 50;
                 
                 switch(board[i][j]){
                     case boardSpaceEnum.EMPTY:
-                        img.src = "../Empty.png";
+                        img.src = EMPTY_FILE;
                         break;
                     case boardSpaceEnum.UNREACHABLE:
-                        img.src = "../Unreachable.png";
+                        img.src = UNREACHABLE_FILE;
                         break;
                     case boardSpaceEnum.PLAYER1:
-                        img.src = "../Player1.png";
+                        img.src = PLAYER1_FILE;
                         break;
                     case boardSpaceEnum.PLAYER2:
-                        img.src = "../Player2.png";
+                        img.src = PLAYER2_FILE;
                         break;
                     case boardSpaceEnum.PLAYER1KING:
-                        img.src = "../Player1King.png";
+                        img.src = PLAYER1KING_FILE;
                         break;
                     case boardSpaceEnum.PLAYER2KING:
-                        img.src = "../Player2King.png";
+                        img.src = PLAYER2KING_FILE;
                         break;
                 }
 
@@ -58,27 +74,27 @@ function DisplayBoard(outputTable) {
             clearCell(cell)
             let img = document.createElement("img");
 
-            img.width = imgWidth;
-            img.height = imgHeight;
+            img.width = IMG_WIDTH;
+            img.height = IMG_HEIGHT;
             
             switch(board[coordinate[0]][coordinate[1]]){
                 case boardSpaceEnum.EMPTY:
-                        img.src = "../Empty.png";
+                        img.src = EMPTY_FILE;
                         break;
                     case boardSpaceEnum.UNREACHABLE:
-                        img.src = "../Unreachable.png";
+                        img.src = UNREACHABLE_FILE;
                         break;
                     case boardSpaceEnum.PLAYER1:
-                        img.src = "../Player1.png";
+                        img.src = PLAYER1_FILE;
                         break;
                     case boardSpaceEnum.PLAYER2:
-                        img.src = "../Player2.png";
+                        img.src = PLAYER2_FILE;
                         break;
                     case boardSpaceEnum.PLAYER1KING:
-                        img.src = "../Player1King.png";
+                        img.src = PLAYER1KING_FILE;
                         break;
                     case boardSpaceEnum.PLAYER2KING:
-                        img.src = "../Player2King.png";
+                        img.src = PLAYER2KING_FILE;
                         break;
             }
 
@@ -99,24 +115,24 @@ function DisplayBoard(outputTable) {
             clearCell(cell)
             let img = document.createElement("img");
 
-            img.width = imgWidth;
-            img.height = imgHeight;
+            img.width = IMG_WIDTH;
+            img.height = IMG_HEIGHT;
             
             switch(board[coordinate[0]][coordinate[1]]){
                 case boardSpaceEnum.PLAYER1:
-                    img.src = "../Player1_Highlight.png";
+                    img.src = PLAYER1_HIGHLIGHT_FILE;
                     break;
                 case boardSpaceEnum.PLAYER2:
-                    img.src = "../Player2_Highlight.png";
+                    img.src = PLAYER2_HIGHLIGHT_FILE;
                     break;
                 case boardSpaceEnum.PLAYER1KING:
-                    img.src = "../Player1King_Highlight.png";
+                    img.src = PLAYER1KING_HIGHLIGHT_FILE;
                     break;
                 case boardSpaceEnum.PLAYER2KING:
-                    img.src = "../Player2King_Highlight.png";
+                    img.src = PLAYER2KING_HIGHLIGHT_FILE;
                     break;
                 case boardSpaceEnum.EMPTY:
-                    img.src = "../Highlight.png";
+                    img.src = EMPTY_HIGHLIGHT_FILE;
                     break;
                 default:
                     throw `Space type with code ${board[coordinate[0]][coordinate[1]]} cannot be highlighted`
@@ -136,21 +152,21 @@ function DisplayBoard(outputTable) {
         clearCell(cell);
         let img = document.createElement("img");
 
-        img.width = imgWidth;
-        img.height = imgHeight;
+        img.width = IMG_WIDTH;
+        img.height = IMG_HEIGHT;
 
         switch(board[pieceRow][pieceColumn]){
             case boardSpaceEnum.PLAYER1:
-                img.src = "../Player1_Selected.png";
+                img.src = PLAYER1_SELECTED_FILE;
                 break;
             case boardSpaceEnum.PLAYER2:
-                img.src = "../Player2_Selected.png";
+                img.src = PLAYER2_SELECTED_FILE;
                 break;
             case boardSpaceEnum.PLAYER1KING:
-                img.src = "../Player1King_Selected.png";
+                img.src = PLAYER1KING_SELECTED_FILE;
                 break;
             case boardSpaceEnum.PLAYER2KING:
-                img.src = "../Player2King_Selected.png";
+                img.src = PLAYER2KING_SELECTED_FILE;
                 break;
             default:
                 throw `Space type with code ${board[pieceRow][pieceColumn]} cannot be selected`
@@ -170,21 +186,21 @@ function DisplayBoard(outputTable) {
         clearCell(cell);
         let img = document.createElement("img");
 
-        img.width = imgWidth;
-        img.height = imgHeight;
+        img.width = IMG_WIDTH;
+        img.height = IMG_HEIGHT;
 
         switch(board[this.selectedPieceRow][this.selectedPieceColumn]){
             case boardSpaceEnum.PLAYER1:
-                img.src = "../Player1.png";
+                img.src = PLAYER1_FILE;
                 break;
             case boardSpaceEnum.PLAYER2:
-                img.src = "../Player2.png";
+                img.src = PLAYER2_FILE;
                 break;
             case boardSpaceEnum.PLAYER1KING:
-                img.src = "../Player1King.png";
+                img.src = PLAYER1KING_FILE;
                 break;
             case boardSpaceEnum.PLAYER2KING:
-                img.src = "../Player2King.png";
+                img.src = PLAYER2KING_FILE;
                 break;
             default:
                 throw `Space type with code ${board[this.selectedPieceRow][this.selectedPieceColumn]} cannot be selected`
