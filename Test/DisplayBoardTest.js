@@ -178,7 +178,7 @@ describe("Board Display Tests", function(){
                 let display = new DisplayBoard(table);
         
                 display.displayBoard(board);
-                display.highlightPieces(board, pieces);
+                display.highlightSpaces(board, pieces);
         
                 assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player1_Highlight.png'));
             });
@@ -195,7 +195,7 @@ describe("Board Display Tests", function(){
                 let display = new DisplayBoard(table);
         
                 display.displayBoard(board);
-                display.highlightPieces(board, pieces);
+                display.highlightSpaces(board, pieces);
         
                 assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player1King_Highlight.png'));
             });
@@ -212,7 +212,7 @@ describe("Board Display Tests", function(){
                 let display = new DisplayBoard(table);
         
                 display.displayBoard(board);
-                display.highlightPieces(board, pieces);
+                display.highlightSpaces(board, pieces);
         
                 assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player2_Highlight.png'));
             });
@@ -229,7 +229,7 @@ describe("Board Display Tests", function(){
                 let display = new DisplayBoard(table);
         
                 display.displayBoard(board);
-                display.highlightPieces(board, pieces);
+                display.highlightSpaces(board, pieces);
         
                 assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player2King_Highlight.png'));
             });
@@ -246,7 +246,7 @@ describe("Board Display Tests", function(){
                 let display = new DisplayBoard(table);
         
                 display.displayBoard(board);
-                display.highlightPieces(board, pieces);
+                display.highlightSpaces(board, pieces);
         
                 assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Highlight.png'));
             });
@@ -265,7 +265,7 @@ describe("Board Display Tests", function(){
                 let display = new DisplayBoard(table);
         
                 display.displayBoard(board);
-                display.highlightPieces(board, pieces);
+                display.highlightSpaces(board, pieces);
         
                 assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player1_Highlight.png'));
                 assert(display.table.rows[0].cells[2].firstChild.src.endsWith('Player1King_Highlight.png'));
@@ -283,7 +283,7 @@ describe("Board Display Tests", function(){
                 let display = new DisplayBoard(table);
         
                 display.displayBoard(board);
-                display.highlightPieces(board, pieces);
+                display.highlightSpaces(board, pieces);
         
                 assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player2_Highlight.png'));
                 assert(display.table.rows[0].cells[2].firstChild.src.endsWith('Player2King_Highlight.png'));
@@ -302,7 +302,7 @@ describe("Board Display Tests", function(){
                 let display = new DisplayBoard(table);
         
                 display.displayBoard(board);
-                display.highlightPieces(board, pieces);
+                display.highlightSpaces(board, pieces);
         
                 assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player1.png'));
                 assert(display.table.rows[1].cells[1].firstChild.src.endsWith('Player1King.png'));
@@ -323,7 +323,7 @@ describe("Board Display Tests", function(){
                 let display = new DisplayBoard(table);
         
                 display.displayBoard(board);
-                display.highlightPieces(board, pieces);
+                display.highlightSpaces(board, pieces);
                 display.clearHighlights(board);
         
                 assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player1.png'));
@@ -343,7 +343,7 @@ describe("Board Display Tests", function(){
                 let display = new DisplayBoard(table);
         
                 display.displayBoard(board);
-                display.highlightPieces(board, pieces);
+                display.highlightSpaces(board, pieces);
                 display.clearHighlights(board);
         
                 assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player1.png'));
@@ -364,8 +364,8 @@ describe("Board Display Tests", function(){
                 let display = new DisplayBoard(table);
         
                 display.displayBoard(board);
-                display.highlightPieces(board, pieces1);
-                display.highlightPieces(board, pieces2);
+                display.highlightSpaces(board, pieces1);
+                display.highlightSpaces(board, pieces2);
         
                 assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player1_Highlight.png'));
                 assert(display.table.rows[0].cells[1].firstChild.src.endsWith('Player2.png'));
@@ -388,7 +388,136 @@ describe("Board Display Tests", function(){
                 let display = new DisplayBoard(table);
         
                 display.displayBoard(board);
-                chai.expect(display.highlightPieces.bind(display, board, pieces)).to.throw('Space type with code 6 cannot be hilighted');
+                chai.expect(display.highlightSpaces.bind(display, board, pieces)).to.throw('Space type with code 6 cannot be highlighted');
+    
+            });
+        });
+    });
+
+    describe("Select Piece", function(){
+        describe("Verify each space selects correctly", function(){
+            it("Player 1", function(){
+                let table = generateTable(1, 1);
+        
+                let board = [
+                    [boardSpaceEnum.PLAYER1]
+                ];
+                
+                let display = new DisplayBoard(table);
+        
+                display.displayBoard(board);
+                display.selectPiece(board, 0, 0);
+        
+                assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player1_Selected.png'));
+            });
+
+            it("Player 2", function(){
+                let table = generateTable(1, 1);
+        
+                let board = [
+                    [boardSpaceEnum.PLAYER2]
+                ];
+                
+                let display = new DisplayBoard(table);
+        
+                display.displayBoard(board);
+                display.selectPiece(board, 0, 0);
+        
+                assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player2_Selected.png'));
+            });
+
+            it("Player 1 King", function(){
+                let table = generateTable(1, 1);
+        
+                let board = [
+                    [boardSpaceEnum.PLAYER1KING]
+                ];
+                
+                let display = new DisplayBoard(table);
+        
+                display.displayBoard(board);
+                display.selectPiece(board, 0, 0);
+        
+                assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player1King_Selected.png'));
+            });
+
+            it("Player 2 King", function(){
+                let table = generateTable(1, 1);
+        
+                let board = [
+                    [boardSpaceEnum.PLAYER2KING]
+                ];
+                
+                let display = new DisplayBoard(table);
+        
+                display.displayBoard(board);
+                display.selectPiece(board, 0, 0);
+        
+                assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player2King_Selected.png'));
+            });
+        });
+
+        describe("Clear selection", function(){
+            it("Selection is removed", function(){
+                let table = generateTable(1, 1);
+        
+                let board = [
+                    [boardSpaceEnum.PLAYER1]
+                ];
+                
+                let display = new DisplayBoard(table);
+        
+                display.displayBoard(board);
+                display.selectPiece(board, 0, 0);
+                display.clearSelection(board);
+        
+                assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player1.png'));
+            });
+
+            it("Selection is cleard when new piece is selected", function(){
+                let table = generateTable(1, 2);
+        
+                let board = [
+                    [boardSpaceEnum.PLAYER1, boardSpaceEnum.PLAYER1KING]
+                ];
+                
+                let display = new DisplayBoard(table);
+        
+                display.displayBoard(board);
+                display.selectPiece(board, 0, 0);
+                display.selectPiece(board, 0, 1);
+        
+                assert(display.table.rows[0].cells[0].firstChild.src.endsWith('Player1.png'));
+                assert(display.table.rows[0].cells[1].firstChild.src.endsWith('Player1King_Selected.png'));
+            });
+        });
+
+        describe("Errors", function(){
+            it("Attempting to select Unreachable space throws exception", function(){
+                let table = generateTable(1, 1);
+        
+                let board = [
+                    [boardSpaceEnum.UNREACHABLE]
+                ];
+                
+                let display = new DisplayBoard(table);
+        
+                display.displayBoard(board);
+                chai.expect(display.selectPiece.bind(display, board, 0, 0)).to.throw('Space type with code 6 cannot be selected');
+    
+            });
+
+            it("Attempting to select Empty space throws exception", function(){
+                let table = generateTable(1, 1);
+        
+                let board = [
+                    [boardSpaceEnum.EMPTY]
+                ];
+
+                let display = new DisplayBoard(table);
+        
+                display.displayBoard(board);
+                chai.expect(display.selectPiece.bind(display, board, 0, 0)).to.throw('Space type with code 5 cannot be selected');
     
             });
         });
