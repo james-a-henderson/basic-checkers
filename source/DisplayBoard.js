@@ -29,6 +29,12 @@ function DisplayBoard(outputTable) {
     this.selectedPieceColumn = -1;
 
     this.displayBoard = function(board){
+
+        //clear any selections
+        this.higlightedSpaces = [];
+        this.selectedPieceRow = -1;
+        this.selectedPieceColumn = -1;
+
         for(let i = 0; i < board.length; i++){
             let row = this.table.rows[i];
 

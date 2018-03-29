@@ -7,6 +7,7 @@
     
     <script src="Board.js"></script>
     <script src="DisplayBoard.js"></script>
+    <script src="ProcessInput.js"></script>
 
     <script>
         let table = document.createElement("TABLE");
@@ -25,10 +26,7 @@
         let bor = new Board(false);
 
         let display = new DisplayBoard(table);
-        display.displayBoard(bor.board);
-        display.highlightAvailableMovesForCurrentPlayer(bor.board, bor.getPiecesWithAvailableMoves(bor.currentPlayer));
-        bor.currentPlayer = playerEnum.PLAYER2;
-        display.highlightAvailableMovesForCurrentPlayer(bor.board, bor.getPiecesWithAvailableMoves(bor.currentPlayer));
+        let processInput = new ProcessInput(bor, display);   
 
     </script>
 
