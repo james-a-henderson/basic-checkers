@@ -522,5 +522,4 @@ describe("Board Display Tests", function(){
             });
         });
     });
-
 });

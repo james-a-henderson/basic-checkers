@@ -20,6 +20,7 @@ function ProcessInput(board, display){
 
     //initialize display
     this.display.displayBoard(board.board);
+    this.display.updateCurrentPlayer(board.currentPlayer)
     this.display.highlightSpaces(board.board, this.availablePieceSelections);
 
     this.cellProcess = function(row, column){
@@ -65,6 +66,7 @@ function ProcessInput(board, display){
         this.display.highlightSpaces(this.board.board, this.availablePieceSelections);
 
         this.selectMode = selectionEnum.PIECE_SELECT;
+        this.display.updateCurrentPlayer(this.board.currentPlayer);
     }
 
     this.removeSelection = function(){

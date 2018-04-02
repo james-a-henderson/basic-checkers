@@ -22,12 +22,25 @@
         }
 
         document.body.appendChild(table);
+    </script>
 
-        let bor = new Board(false);
+    <div id="CurrentPlayer"> Current Player </div>
+    <button onclick="newGame()">New Game</button>
 
-        let display = new DisplayBoard(table);
-        let processInput = new ProcessInput(bor, display);   
+    <script>
+        let gameBoard;
 
+        let display;
+        let processInput;   
+
+        newGame();
+
+        function newGame(){
+            gameBoard = new Board(false);
+
+            display = new DisplayBoard(table);
+            processInput = new ProcessInput(gameBoard, display);
+        }
     </script>
 
 </html>

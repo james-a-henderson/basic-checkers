@@ -27,6 +27,7 @@ function DisplayBoard(outputTable) {
     this.higlightedSpaces = [];
     this.selectedPieceRow = -1;
     this.selectedPieceColumn = -1;
+    this.currentPlayerDiv = document.getElementById("CurrentPlayer");
 
     this.displayBoard = function(board){
 
@@ -216,6 +217,16 @@ function DisplayBoard(outputTable) {
 
         this.selectedPieceRow = -1;
         this.selectedPieceColumn = -1;
+    }
+
+    this.updateCurrentPlayer = function(player){
+        if(player === playerEnum.PLAYER1){
+            this.currentPlayerDiv.innerHTML = "Player 1";
+        } else if (player === playerEnum.PLAYER2){
+            this.currentPlayerDiv.innerHTML = "Player 2";
+        } else {
+            throw `Invalid Player: ${player}`;
+        }
     }
 
     function clearCell(cell){
